@@ -1,41 +1,42 @@
-import matplotlib.pyplot as plt
-import matplotlib.dates as mdates
-import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.cm as cm
 from datetime import datetime
 
-df = pd.read_csv('data/authorTouched_rootbeer.csv')
+df = pd.read_csv("data/authorsTouched.csv")
 
-# Convert Date column to datetime and expand multiple dates per row
-df_exploded = df.assign(Date=df['Date'].str.split('; ')).explode('Date')
-df_exploded['Date'] = pd.to_datetime(df_exploded['Date'])
+# Convert 'Date' to list of datetime objects
+df["Date"] = df["Date"].apply(
+    lambda x: [datetime.strptime(d, "%Y-%m-%dT%H:%M:%SZ") for d in x.split("; ")]
+)
 
-# Convert dates to weeks since the earliest modification
-min_date = df_exploded['Date'].min()
-df_exploded['Weeks'] = ((df_exploded['Date'] - min_date).dt.days) // 7
+# Flatten all dates to find the earliest date
+all_dates = [date for sublist in df["Date"] for date in sublist]
+min_date = min(all_dates)
+
+# Convert dates to weeks since the earliest date
+df["Weeks"] = df["Date"].apply(lambda dates: [(d - min_date).days // 7 for d in dates])
 
 # Assign numeric values to filenames for plotting
-file_mapping = {file: idx for idx, file in enumerate(df_exploded['Filename'].unique())}
-df_exploded['FileIndex'] = df_exploded['Filename'].map(file_mapping)
+file_map = {file: idx for idx, file in enumerate(df["Filename"].unique())}
+df["FileIndex"] = df["Filename"].map(file_map)
 
-# Assign colors to authors
-authors = df_exploded['Author'].unique()
-colors = plt.cm.rainbow(np.linspace(0, 1, len(authors)))
-author_colors = dict(zip(authors, colors))
+# Assign colors based on authors
+authors = df["Author"].unique()
+color_map = {author: cm.rainbow(i / len(authors)) for i, author in enumerate(authors)}
 
-# Plot scatter plot
+# Create scatter plot
 plt.figure(figsize=(10, 6))
-for author, color in author_colors.items():
-    subset = df_exploded[df_exploded['Author'] == author]
-    plt.scatter(subset['FileIndex'], subset['Weeks'], label=author, color=color, alpha=0.7)
 
-# Formatting the plot
-plt.xlabel("File")
-plt.ylabel("Weeks")
-plt.xticks(ticks=range(len(file_mapping)), labels=file_mapping.keys(), rotation=90)
-plt.legend(title="Author", bbox_to_anchor=(1.05, 1), loc='upper left', fontsize='small')
-plt.grid(True, linestyle='--', alpha=0.5)
-plt.tight_layout()
+for _, row in df.iterrows():
+    plt.scatter(
+        [row["FileIndex"]] * len(row["Weeks"]),
+        row["Weeks"],
+        color=color_map[row["Author"]],
+        alpha=0.7,
+    )
 
-# Show the plot
+plt.xlabel("file")
+plt.ylabel("weeks")
 plt.show()

@@ -84,7 +84,7 @@ print('Total number of files: ' + str(len(dictfiles)))
 
 file = repo.split('/')[1]
 # change this to the path of your file
-fileOutput = 'data/authorsTouched_' + file + '.csv'
+fileOutput = 'data/authorsTouched.csv'
 rows = ["Filename", "Author", "Date", "Touches"]
 fileCSV = open(fileOutput, 'w')
 writer = csv.writer(fileCSV)
