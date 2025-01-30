@@ -87,7 +87,7 @@ def collect_authors_file_touches(dictfiles, lsttokens, repo):
 repo = 'scottyab/rootbeer'
 
 # GitHub tokens (replace with your own)
-lsttokens = [""]
+lsttokens = ["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"]
 
 dictfiles = {}
 collect_authors_file_touches(dictfiles, lsttokens, repo)
