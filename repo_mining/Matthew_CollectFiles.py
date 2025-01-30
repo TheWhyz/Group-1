@@ -64,7 +64,13 @@ repo = 'scottyab/rootbeer'
 # Remember to empty the list when going to commit to GitHub.
 # Otherwise they will all be reverted and you will have to re-create them
 # I would advise to create more than one token for repos with heavy commits
+<<<<<<< Updated upstream:repo_mining/Matthew_CollectFiles.py
 lstTokens = ["sample"]
+=======
+lstTokens = ["",
+                "",
+                ""]
+>>>>>>> Stashed changes:repo_mining/brenda_CollectFiles.py
 
 dictfiles = dict()
 countfiles(dictfiles, lstTokens, repo)
