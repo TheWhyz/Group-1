@@ -1,7 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.cm as cm
 from datetime import datetime
 
 df = pd.read_csv("data/authorsTouched.csv")
@@ -24,19 +23,25 @@ df["FileIndex"] = df["Filename"].map(file_map)
 
 # Assign colors based on authors
 authors = df["Author"].unique()
-color_map = {author: cm.rainbow(i / len(authors)) for i, author in enumerate(authors)}
+colors = plt.cm.rainbow(np.linspace(0, 1, len(authors)))
+color_map = dict(zip(authors, colors))
 
 # Create scatter plot
 plt.figure(figsize=(10, 6))
 
-for _, row in df.iterrows():
-    plt.scatter(
-        [row["FileIndex"]] * len(row["Weeks"]),
-        row["Weeks"],
-        color=color_map[row["Author"]],
-        alpha=0.7,
-    )
+for author in authors:
+    author_data = df[df["Author"] == author]
+    for _, row in author_data.iterrows():
+        plt.scatter(
+            [row["FileIndex"]] * len(row["Weeks"]),
+            row["Weeks"],
+            color=color_map[author],
+            alpha=0.7,
+            label=author if author not in plt.gca().get_legend_handles_labels()[1] else ""
+        )
 
-plt.xlabel("file")
-plt.ylabel("weeks")
+plt.xlabel("File")
+plt.ylabel("Weeks")
+plt.legend(title="Authors", bbox_to_anchor=(1.05, 1), loc='center left')
+plt.tight_layout()
 plt.show()
