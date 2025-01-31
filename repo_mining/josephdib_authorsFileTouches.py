@@ -16,6 +16,7 @@ def github_auth(url, lsttokens, ct):
         jsonData = json.loads(request.content)
         ct += 1
     except Exception as e:
+        pass
         print(e)
     return jsonData, ct
 
@@ -25,6 +26,8 @@ def github_auth(url, lsttokens, ct):
 def countfiles(dictfiles, lsttokens, repo):
     ipage = 1  # url page counter
     ct = 0  # token counter
+
+    #File extentions to grab from
     file_exts = ['.py', '.java', '.js', '.cpp', '.c', '.cs', '.kts', '.kt', '.rb', '.go', '.php', '.html', '.css']
 
     try:
@@ -37,7 +40,6 @@ def countfiles(dictfiles, lsttokens, repo):
             # break out of the while loop if there are no more commits in the pages
             if not jsonCommits:
                 break
-
             # iterate through the list of commits in spage
             for shaObject in jsonCommits:
                 sha = shaObject['sha']
@@ -45,9 +47,10 @@ def countfiles(dictfiles, lsttokens, repo):
                 date = shaObject['commit']['author']['date']
 
                 # For each commit, use the GitHub commit API to extract the files touched by the commit
-                shaUrl = f'https://api.github.com/repos/{repo}/commits/{sha}'
+                shaUrl = 'https://api.github.com/repos/' + repo + '/commits/' + sha
                 shaDetails, ct = github_auth(shaUrl, lsttokens, ct)
                 
+                # gets the info of the file if it is a source file
                 if 'files' in shaDetails:
                     for filenameObj in shaDetails['files']:
                         filename = filenameObj['filename']
@@ -57,22 +60,28 @@ def countfiles(dictfiles, lsttokens, repo):
                             dictfiles[filename].append((author, date))
                             print(filename, author, date)
             ipage += 1
-    except Exception as e:
-        print("Error receiving data:", e)
+    except:
+        print("Error receiving data:")
         exit(0)
-
 # GitHub repo
 repo = 'scottyab/rootbeer'
+# repo = 'Skyscanner/backpack' # This repo is commit heavy. It takes long to finish executing
+# repo = 'k9mail/k-9' # This repo is commit heavy. It takes long to finish executing
+# repo = 'mendhak/gpslogger'
 
-# GitHub authentication tokens
+
+# put your tokens here
+# Remember to empty the list when going to commit to GitHub.
+# Otherwise they will all be reverted and you will have to re-create them
+# I would advise to create more than one token for repos with heavy commits
 lstTokens = [""]
 
-dictfiles = {}
+dictfiles = dict()
 countfiles(dictfiles, lstTokens, repo)
 print('Total number of files: ' + str(len(dictfiles)))
 
 file = repo.split('/')[1]
-fileOutput = f'data/file_{file}.csv'
+fileOutput = 'data/file_' + file + '.csv'
 
 with open(fileOutput, 'w', newline='') as fileCSV:
     writer = csv.writer(fileCSV)
@@ -88,4 +97,5 @@ with open(fileOutput, 'w', newline='') as fileCSV:
             bigcount = len(touches)
             bigfilename = filename
 
-print(f'The file {bigfilename} has been touched {bigcount} times.')
+fileCSV.close()
+print('The file ' + bigfilename + ' has been touched ' + str(bigcount) + ' times.')
