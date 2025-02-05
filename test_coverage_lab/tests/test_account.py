@@ -123,8 +123,25 @@ def test_account_serialization():
 # - Validate that missing fields trigger the correct exception.
 
 # TODO 4: Test Positive Deposit
-# - Ensure `deposit()` correctly increases the account balance.
-# - Verify that depositing a positive amount updates the balance correctly.
+# ===========================
+# Test: Invalid Role Assignment
+# Author: Matthew Rainwater
+# Date: 02-04-2025
+# Description: Ensure `deposit()` correctly increases the account balance and
+# verify that depositing a positive amount updates the balance correctly.
+# ===========================
+
+def test_positive_deposit():
+    """Test positive deposit"""
+    account = Account(name="Alice", email="alice@example.com", balance=100.0)
+
+    # positive deposit 
+    deposit_amount = 50.0
+    account.deposit(deposit_amount)
+
+    # verify balance was updated
+    assert account.balance == 150.0, f"Expected balance 150.0, but got {account.balance}"
+
 
 # TODO 5: Test Deposit with Zero/Negative Values
 # - Ensure `deposit()` raises an error for zero or negative amounts.
