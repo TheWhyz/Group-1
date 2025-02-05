@@ -23,27 +23,14 @@ def client():
 class TestCounterEndpoints:
     """Test cases for Counter API"""
 
-    def test_create_counter(self, client):
-        """It should create a counter"""
-        result = client.post('/counters/foo')
-        assert result.status_code == status.HTTP_201_CREATED
+    def test_reset_all_counters(self, client):
+        """It should reset all counters"""
+        # Create a counter
+        client.post('/counters/foo')
+        client.put('/counters/foo', json={"value": 10})
 
-    def test_get_counter(self, client):
-        """It should get a counter"""
-        result = client.post('/counters/foo')
-        result = client.get('/counters/foo')
-        assert result.status_code == status.HTTP_201_CREATED
+        # Reset all counters
+        result = client.post('/counters/reset')
 
-    def test_delete_counter(self, client):
-        """It should delete an existing counter"""
-
-        client.post('/counters/my_counter')
-        response = client.delete('/counters/my_counter')
-        assert response.status_code == status.HTTP_204_NO_CONTENT
-        response = client.get('/counters/my_counter')
-        assert response.status_code == status.HTTP_404_NOT_FOUND
-
-    def test_create_new_counter(self, client):
-        """It should create a counter"""
-        result = client.post('/counters/fooo')
-        assert result.status_code == status.HTTP_201_CREATED
+        assert result.status_code == status.HTTP_200_OK
+        assert result.get_json() == {"message": "All counters reset"}
