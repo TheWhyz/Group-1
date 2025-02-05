@@ -6,6 +6,7 @@ from random import randrange
 import pytest
 from models import db
 from models.account import Account, DataValidationError
+from datetime import datetime
 
 ACCOUNT_DATA = {}
 
@@ -89,6 +90,30 @@ Each test should include:
 # - Ensure `to_dict()` correctly converts an account to a dictionary format.
 # - Verify that all expected fields are included in the dictionary.
 
+# ===========================
+# Test: Test Account Serialization
+# Author: Evan Hollingshead
+# Date: 2025-02-01
+# Description: Checks that 'to_dict()' converts an account to a dictionary.
+# ===========================
+def test_account_serialization():
+    """Test that 'to_dict()' correctly converts an account to a dictionary"""
+    account = Account(role = "user", email = "test@example.com", id = 1, name = "evan", balance = 100.0, phone_number = "1234567890", date_joined = datetime(2025, 2,1,1,0,0), disabled = False)
+    account_dict = account.to_dict()
+    expected_dict = {
+        "id": 1,
+        "name": "evan",
+        "email": "test@example.com",
+        "phone_number": "1234567890",
+        "disabled": False,
+        "date_joined": datetime(2025, 2,1,1,0,0),
+        "balance": 100.0,
+        "role": "user"
+    }
+    for key,value in expected_dict.items():
+        assert key in account_dict
+        assert account_dict[key] == value
+
 # TODO 2: Test Invalid Email Input
 # - Check that invalid emails (e.g., "not-an-email") raise a validation error.
 # - Ensure accounts without an email cannot be created.
@@ -113,10 +138,32 @@ Each test should include:
 # - Ensure `withdraw()` raises an error when attempting to withdraw more than available balance.
 # - Verify that the balance remains unchanged after a failed withdrawal.
 
+# ===========================
+# Test: Test Withdraw Insufficient funds
+# Author: Jordan Spencer
+# Date: 2025-02-04
+# Description: Check if withdraw allows to withdraw more than balance.
+# ===========================
+
+def test_withdraw_insufficient_balance():
+    """Test withdrawing more than available balance"""
+    account = Account(balance=100)
+
+    # Capture initial balance
+    initial_balance = account.balance
+
+    # Attempt to withdraw more than the balance
+    with pytest.raises(DataValidationError):
+        account.withdraw(200)  # Overdraft should raise an error
+
+    # Ensure balance remains unchanged after failed withdrawal
+    assert account.balance == initial_balance
+
 # TODO 8: Test Password Hashing
 # - Ensure that passwords are stored as **hashed values**.
 # - Verify that plaintext passwords are never stored in the database.
 # - Test password verification with `set_password()` and `check_password()`.
+
 # ===========================
 # Test: Test Password Hashing
 # Author: Jaydan Escober
