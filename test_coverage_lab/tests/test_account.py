@@ -117,6 +117,22 @@ Each test should include:
 # - Ensure that passwords are stored as **hashed values**.
 # - Verify that plaintext passwords are never stored in the database.
 # - Test password verification with `set_password()` and `check_password()`.
+# ===========================
+# Test: Test Password Hashing
+# Author: Jaydan Escober
+# Date: 2025-02-04
+# Description: Ensure that passwords are stored as hashed values.
+# ===========================
+def test_password_hashing():
+    # Test password hashing
+    account = Account(name="John Doe", email="johndoe@example.com")
+    
+    password = "securepassword"
+    account.set_password(password)
+    
+    # Ensure the password is hashed
+    assert account.password_hash != password
+    assert account.check_password(password) is True
 
 # TODO 9: Test Role Assignment
 # - Ensure that `change_role()` correctly updates an account’s role.
