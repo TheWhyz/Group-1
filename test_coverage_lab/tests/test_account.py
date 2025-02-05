@@ -117,6 +117,30 @@ def test_account_serialization():
 # - Check that invalid emails (e.g., "not-an-email") raise a validation error.
 # - Ensure accounts without an email cannot be created.
 
+# ===========================
+# Test: Test Invalid Email Input
+# Author: Brenda Coronado
+# Date: 2025-02-05
+# Description: Checks for invalid email input
+# ===========================
+def test_validate_email():
+    # Test valid email
+    account_valid = Account(role="user", email="test@example.com", id=1, name="evan", balance=100.0, phone_number="1234567890", date_joined=datetime(2025, 2, 1, 1, 0, 0), disabled=False)
+    account_valid.validate_email()  # Should not raise an error
+
+    # Test invalid emails
+    invalid_emails = ["not-an-email", "missing@domain", "@missingusername.com", "user@.com", "user@com"]
+    for invalid_email in invalid_emails:
+        account_invalid = Account(role="user", email=invalid_email, id=2, name="john", balance=50.0, phone_number="0987654321", date_joined=datetime(2025, 2, 1, 1, 0, 0), disabled=False)
+        with pytest.raises(DataValidationError, match="Invalid email format"):
+            account_invalid.validate_email()
+
+    # Test account without an email
+    account_no_email = Account(role="user", email="", id=3, name="jane", balance=75.0, phone_number="1122334455", date_joined=datetime(2025, 2, 1, 1, 0, 0), disabled=False)
+    with pytest.raises(DataValidationError, match="Invalid email format"):
+        account_no_email.validate_email()
+
+
 # TODO 3: Test Missing Required Fields
 # - Ensure that creating an `Account()` without required fields raises an error.
 # - Validate that missing fields trigger the correct exception.
@@ -254,7 +278,7 @@ def test_reactivate():
 # Description: Test to validate an email input
 # ===========================
 
-def test_validate_email():
+def test_validate_unique_email():
     """Test email validation function"""
     from models.account import Account, DataValidationError
 
