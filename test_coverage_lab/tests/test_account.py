@@ -113,7 +113,6 @@ def test_account_serialization():
     for key,value in expected_dict.items():
         assert key in account_dict
         assert account_dict[key] == value
-
 # TODO 2: Test Invalid Email Input
 # - Check that invalid emails (e.g., "not-an-email") raise a validation error.
 # - Ensure accounts without an email cannot be created.
@@ -123,6 +122,9 @@ def test_account_serialization():
 # - Validate that missing fields trigger the correct exception.
 
 # TODO 4: Test Positive Deposit
+
+# - Ensure `deposit()` correctly increases the account balance.
+# - Verify that depositing a positive amount updates the balance correctly.
 # ===========================
 # Test: Invalid Role Assignment
 # Author: Matthew Rainwater
@@ -141,7 +143,6 @@ def test_positive_deposit():
 
     # verify balance was updated
     assert account.balance == 150.0, f"Expected balance 150.0, but got {account.balance}"
-
 
 # TODO 5: Test Deposit with Zero/Negative Values
 # - Ensure `deposit()` raises an error for zero or negative amounts.
@@ -175,7 +176,6 @@ def test_withdraw_insufficient_balance():
 
     # Ensure balance remains unchanged after failed withdrawal
     assert account.balance == initial_balance
-
 # TODO 8: Test Password Hashing
 # - Ensure that passwords are stored as **hashed values**.
 # - Verify that plaintext passwords are never stored in the database.
@@ -226,7 +226,6 @@ def test_reactivate():
     account = Account(role = "user", email = "test@example.com", name = "joseph", disabled = True)
     account.disabled = False
     assert account.disabled == False
-
 # TODO 10: Test Invalid Role Assignment
 # - Ensure that assigning an invalid role raises an appropriate error.
 # - Verify that only allowed roles (`admin`, `user`, etc.) can be set.
