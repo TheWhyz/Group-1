@@ -152,6 +152,22 @@ def test_positive_deposit():
 # - Ensure `withdraw()` correctly decreases the account balance.
 # - Verify that withdrawals within available balance succeed.
 
+#===========================
+#Test: Valid Withdrawal
+#Author: Maylee Del Rio
+#Date: 2025-02-4
+#Description: Testing valid withdrawal amount from an account with sufficient funds
+#===========================
+def test_valid_withdrawal():
+    # the account information
+    account = Account(name="Lebron James", email="LebronJames23@example.com", balance=100000000.0)
+
+    # Withdraw valid case
+    account.withdraw(100000.0)
+
+    # The new balance 100000000 - 100000 = 99900000
+    assert account.balance == 99900000.0
+
 # TODO 7: Test Withdrawal with Insufficient Funds
 # - Ensure `withdraw()` raises an error when attempting to withdraw more than available balance.
 # - Verify that the balance remains unchanged after a failed withdrawal.
@@ -209,7 +225,7 @@ def test_password_hashing():
 # Description: Tests that deactivate() correctly deactivates an existing account.
 # ===========================
 def test_deactivate():
-    """Test that 'deactivate()' correctly deletes an existing account"""
+    """Test that 'deactivate()' correctly deactivates an existing account"""
     account = Account(role = "user", email = "test@example.com", name = "joseph", disabled = False)
     account.disabled = True
     assert account.disabled == True
@@ -222,17 +238,17 @@ def test_deactivate():
 # ===========================
 
 def test_reactivate():
-    """Test that 'delete()' correctly deletes an existing account"""
+    """Test that 'reactivate()' correctly reactivates an existing account"""
     account = Account(role = "user", email = "test@example.com", name = "joseph", disabled = True)
     account.disabled = False
     assert account.disabled == False
 
 # TODO 10: Test email uniqueness enforcement
-# - Ensure that assigning an invalid role raises an appropriate error.
-# - Verify that only allowed roles (`admin`, `user`, etc.) can be set.
+# - Ensure that assigning an invalid email raises an appropriate error.
+# - Verifying that email is valid, else, raise error
 
 # ===========================
-# Test: Test email uniqueness enforcement | Verifying only allowed roles can be set
+# Test: Test email uniqueness enforcement
 # Author: Joshua Nathan Zamora
 # Date: 2025-02-04
 # Description: Test to validate an email input
@@ -263,5 +279,3 @@ def test_validate_email():
 # TODO 11: Test Deleting an Account
 # - Ensure that `delete()` removes an account from the database.
 # - Verify that attempting to retrieve a deleted account returns `None` or raises an error.
-
-
