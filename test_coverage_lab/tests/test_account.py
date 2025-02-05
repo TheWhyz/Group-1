@@ -138,6 +138,28 @@ def test_account_serialization():
 # - Ensure `withdraw()` raises an error when attempting to withdraw more than available balance.
 # - Verify that the balance remains unchanged after a failed withdrawal.
 
+# ===========================
+# Test: Test Withdraw Insufficient funds
+# Author: Jordan Spencer
+# Date: 2025-02-04
+# Description: Check if withdraw allows to withdraw more than balance.
+# ===========================
+
+def test_withdraw_insufficient_balance():
+    """Test withdrawing more than available balance"""
+    account = Account(balance=100)
+
+    # Capture initial balance
+    initial_balance = account.balance
+
+    # Attempt to withdraw more than the balance
+    with pytest.raises(DataValidationError):
+        account.withdraw(200)  # Overdraft should raise an error
+
+    # Ensure balance remains unchanged after failed withdrawal
+    assert account.balance == initial_balance
+
+
 # TODO 8: Test Password Hashing
 # - Ensure that passwords are stored as **hashed values**.
 # - Verify that plaintext passwords are never stored in the database.
