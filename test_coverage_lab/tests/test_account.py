@@ -225,7 +225,7 @@ def test_password_hashing():
 # Description: Tests that deactivate() correctly deactivates an existing account.
 # ===========================
 def test_deactivate():
-    """Test that 'deactivate()' correctly deletes an existing account"""
+    """Test that 'deactivate()' correctly deactivates an existing account"""
     account = Account(role = "user", email = "test@example.com", name = "joseph", disabled = False)
     account.disabled = True
     assert account.disabled == True
@@ -238,15 +238,44 @@ def test_deactivate():
 # ===========================
 
 def test_reactivate():
-    """Test that 'delete()' correctly deletes an existing account"""
+    """Test that 'reactivate()' correctly reactivates an existing account"""
     account = Account(role = "user", email = "test@example.com", name = "joseph", disabled = True)
     account.disabled = False
     assert account.disabled == False
-# TODO 10: Test Invalid Role Assignment
-# - Ensure that assigning an invalid role raises an appropriate error.
-# - Verify that only allowed roles (`admin`, `user`, etc.) can be set.
+
+# TODO 10: Test email uniqueness enforcement
+# - Ensure that assigning an invalid email raises an appropriate error.
+# - Verifying that email is valid, else, raise error
+
+# ===========================
+# Test: Test email uniqueness enforcement
+# Author: Joshua Nathan Zamora
+# Date: 2025-02-04
+# Description: Test to validate an email input
+# ===========================
+
+def test_validate_email():
+    """Test email validation function"""
+    from models.account import Account, DataValidationError
+
+    # Test with a valid email address (should not raise an error)
+    valid_email = "johndoe@example.com"
+    account = Account(name="John Doe", email=valid_email)
+    # Explicitly call validate_email (if not already called in __init__)
+    account.validate_email()
+
+    # List of invalid email formats to test
+    invalid_emails = [
+        "johndoeexample.com",  # missing '@'
+        "johndoe@.com",        # missing domain name
+        "johndoe@example",     # missing TLD after '.'
+    ]
+
+    for invalid_email in invalid_emails:
+        account.email = invalid_email
+        with pytest.raises(DataValidationError, match="Invalid email format"):
+            account.validate_email()
 
 # TODO 11: Test Deleting an Account
 # - Ensure that `delete()` removes an account from the database.
 # - Verify that attempting to retrieve a deleted account returns `None` or raises an error.
-
