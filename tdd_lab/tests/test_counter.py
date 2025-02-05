@@ -28,6 +28,12 @@ class TestCounterEndpoints:
         result = client.post('/counters/foo')
         assert result.status_code == status.HTTP_201_CREATED
 
+    def test_get_counter(self, client):
+        """It should get a counter"""
+        result = client.post('/counters/foo')
+        result = client.get('/counters/foo')
+        assert result.status_code == status.HTTP_201_CREATED
+
     def test_delete_counter(self, client):
         """It should delete an existing counter"""
 
