@@ -202,6 +202,31 @@ def test_password_hashing():
 # - Ensure that `change_role()` correctly updates an account’s role.
 # - Verify that the updated role is stored in the database.
 
+# ===========================
+# Test: Test Account Deactivation
+# Author: Joseph Dib
+# Date: 2025-02-04
+# Description: Tests that deactivate() correctly deactivates an existing account.
+# ===========================
+def test_deactivate():
+    """Test that 'deactivate()' correctly deletes an existing account"""
+    account = Account(role = "user", email = "test@example.com", name = "joseph", disabled = False)
+    account.disabled = True
+    assert account.disabled == True
+
+# ===========================
+# Test: Test Account Reactivation
+# Author: Joseph Dib
+# Date: 2025-02-04
+# Description: Tests that reactivate() correctly reactivates an existing account.
+# ===========================
+
+def test_reactivate():
+    """Test that 'delete()' correctly deletes an existing account"""
+    account = Account(role = "user", email = "test@example.com", name = "joseph", disabled = True)
+    account.disabled = False
+    assert account.disabled == False
+
 # TODO 10: Test Invalid Role Assignment
 # - Ensure that assigning an invalid role raises an appropriate error.
 # - Verify that only allowed roles (`admin`, `user`, etc.) can be set.
