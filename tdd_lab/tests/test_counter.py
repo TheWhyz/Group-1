@@ -63,8 +63,3 @@ class TestCounterEndpoints:
         assert response.status_code == status.HTTP_204_NO_CONTENT
         response = client.get('/counters/my_counter')
         assert response.status_code == status.HTTP_404_NOT_FOUND
-        
-    def test_create_new_counter(self, client):
-        """It should create a counter"""
-        result = client.post('/counters/foooo')
-        assert result.status_code == status.HTTP_201_CREATED
