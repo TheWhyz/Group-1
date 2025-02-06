@@ -28,7 +28,8 @@ class TestCounterEndpoints:
         result = client.post('/counters/foo')
         assert result.status_code == status.HTTP_201_CREATED
     
-    def test_create_new_counter(self, client):
+        # BRENDA CORONADO    
+    def test_duplicate_counter(self, client):
         """It should create a counter and prevent duplicates"""
         # First request should succeed
         result = client.post('/counters/fooo')
@@ -38,3 +39,9 @@ class TestCounterEndpoints:
         duplicate_result = client.post('/counters/fooo')
         assert duplicate_result.status_code == status.HTTP_409_CONFLICT
         assert duplicate_result.get_json() == {"error": "Counter fooo already exists"}
+
+        # JORDAN SPENCER
+    def test_create_new_counter(self, client):
+        """It should create a counter"""
+        result = client.post('/counters/foooo')
+        assert result.status_code == status.HTTP_201_CREATED
