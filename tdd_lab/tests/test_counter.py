@@ -28,7 +28,8 @@ class TestCounterEndpoints:
         result = client.post('/counters/foo')
         assert result.status_code == status.HTTP_201_CREATED
     
-    def test_create_new_counter(self, client):
+        # BRENDA CORONADO    
+    def test_duplicate_counter(self, client):
         """It should create a counter and prevent duplicates"""
         # First request should succeed
         result = client.post('/counters/fooo')
@@ -62,3 +63,8 @@ class TestCounterEndpoints:
         assert response.status_code == status.HTTP_204_NO_CONTENT
         response = client.get('/counters/my_counter')
         assert response.status_code == status.HTTP_404_NOT_FOUND
+        
+    def test_create_new_counter(self, client):
+        """It should create a counter"""
+        result = client.post('/counters/foooo')
+        assert result.status_code == status.HTTP_201_CREATED
