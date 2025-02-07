@@ -63,3 +63,14 @@ class TestCounterEndpoints:
         assert response.status_code == status.HTTP_204_NO_CONTENT
         response = client.get('/counters/my_counter')
         assert response.status_code == status.HTTP_404_NOT_FOUND
+
+    # Evan Hollingshead - 5
+    def test_increment_counter(self, client):
+        """Should increment a counter"""
+        counter_name = "test_counter"
+        client.post(f"/counters/{counter_name}")
+        response = client.put(f"/counters/{counter_name}")
+        assert response.status_code == status.HTTP_200_OK
+        assert response.get_json() == {counter_name: 1}
+        response = client.put(f"/counters/{counter_name}")
+        assert response.get_json() == {counter_name: 2}

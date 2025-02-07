@@ -62,3 +62,12 @@ def reset_all_counters():
     """Resets all counters using helper function"""
     reset_counters()
     return jsonify({"message": "All counters reset"}), status.HTTP_200_OK
+
+# Evan Hollingshead - 5
+@app.route('/counters/<name>', methods=['PUT'])
+def increment_counter(name):
+    """Increment a counter"""
+    if not counter_exists(name):
+        return jsonify({"error": f"Counter {name} not found"}), status.HTTP_404_NOT_FOUND
+    COUNTERS[name] += 1
+    return jsonify({name: COUNTERS[name]}), status.HTTP_200_OK
