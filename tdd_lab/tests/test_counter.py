@@ -27,6 +27,11 @@ class TestCounterEndpoints:
         """It should create a counter"""
         result = client.post('/counters/foo')
         assert result.status_code == status.HTTP_201_CREATED
+
+    def test_delete_nonexistent_counter(self, client):
+            """It should not delete a non-existent counter"""
+            result = client.delete('/counters/nonexistent')
+            assert result.status_code == status.HTTP_404_NOT_FOUND
     
         # BRENDA CORONADO    
     def test_duplicate_counter(self, client):
