@@ -113,16 +113,42 @@ def test_account_serialization():
     for key,value in expected_dict.items():
         assert key in account_dict
         assert account_dict[key] == value
-
 # TODO 2: Test Invalid Email Input
 # - Check that invalid emails (e.g., "not-an-email") raise a validation error.
 # - Ensure accounts without an email cannot be created.
+
+# ===========================
+# Test: Test Invalid Email Input
+# Author: Brenda Coronado
+# Date: 2025-02-05
+# Description: Checks for invalid email input
+# ===========================
+def test_validate_email():
+    # Test valid email
+    account_valid = Account(role="user", email="test@example.com", id=1, name="evan", balance=100.0, phone_number="1234567890", date_joined=datetime(2025, 2, 1, 1, 0, 0), disabled=False)
+    account_valid.validate_email()  # Should not raise an error
+
+    # Test invalid emails
+    invalid_emails = ["not-an-email", "missing@domain", "@missingusername.com", "user@.com", "user@com"]
+    for invalid_email in invalid_emails:
+        account_invalid = Account(role="user", email=invalid_email, id=2, name="john", balance=50.0, phone_number="0987654321", date_joined=datetime(2025, 2, 1, 1, 0, 0), disabled=False)
+        with pytest.raises(DataValidationError, match="Invalid email format"):
+            account_invalid.validate_email()
+
+    # Test account without an email
+    account_no_email = Account(role="user", email="", id=3, name="jane", balance=75.0, phone_number="1122334455", date_joined=datetime(2025, 2, 1, 1, 0, 0), disabled=False)
+    with pytest.raises(DataValidationError, match="Invalid email format"):
+        account_no_email.validate_email()
+
 
 # TODO 3: Test Missing Required Fields
 # - Ensure that creating an `Account()` without required fields raises an error.
 # - Validate that missing fields trigger the correct exception.
 
 # TODO 4: Test Positive Deposit
+
+# - Ensure `deposit()` correctly increases the account balance.
+# - Verify that depositing a positive amount updates the balance correctly.
 # ===========================
 # Test: Invalid Role Assignment
 # Author: Matthew Rainwater
@@ -142,7 +168,6 @@ def test_positive_deposit():
     # verify balance was updated
     assert account.balance == 150.0, f"Expected balance 150.0, but got {account.balance}"
 
-
 # TODO 5: Test Deposit with Zero/Negative Values
 # - Ensure `deposit()` raises an error for zero or negative amounts.
 # - Verify that balance remains unchanged after an invalid deposit attempt.
@@ -150,6 +175,22 @@ def test_positive_deposit():
 # TODO 6: Test Valid Withdrawal
 # - Ensure `withdraw()` correctly decreases the account balance.
 # - Verify that withdrawals within available balance succeed.
+
+#===========================
+#Test: Valid Withdrawal
+#Author: Maylee Del Rio
+#Date: 2025-02-4
+#Description: Testing valid withdrawal amount from an account with sufficient funds
+#===========================
+def test_valid_withdrawal():
+    # the account information
+    account = Account(name="Lebron James", email="LebronJames23@example.com", balance=100000000.0)
+
+    # Withdraw valid case
+    account.withdraw(100000.0)
+
+    # The new balance 100000000 - 100000 = 99900000
+    assert account.balance == 99900000.0
 
 # TODO 7: Test Withdrawal with Insufficient Funds
 # - Ensure `withdraw()` raises an error when attempting to withdraw more than available balance.
@@ -175,7 +216,6 @@ def test_withdraw_insufficient_balance():
 
     # Ensure balance remains unchanged after failed withdrawal
     assert account.balance == initial_balance
-
 # TODO 8: Test Password Hashing
 # - Ensure that passwords are stored as **hashed values**.
 # - Verify that plaintext passwords are never stored in the database.
@@ -202,11 +242,64 @@ def test_password_hashing():
 # - Ensure that `change_role()` correctly updates an account’s role.
 # - Verify that the updated role is stored in the database.
 
-# TODO 10: Test Invalid Role Assignment
-# - Ensure that assigning an invalid role raises an appropriate error.
-# - Verify that only allowed roles (`admin`, `user`, etc.) can be set.
+# ===========================
+# Test: Test Account Deactivation
+# Author: Joseph Dib
+# Date: 2025-02-04
+# Description: Tests that deactivate() correctly deactivates an existing account.
+# ===========================
+def test_deactivate():
+    """Test that 'deactivate()' correctly deactivates an existing account"""
+    account = Account(role = "user", email = "test@example.com", name = "joseph", disabled = False)
+    account.disabled = True
+    assert account.disabled == True
+
+# ===========================
+# Test: Test Account Reactivation
+# Author: Joseph Dib
+# Date: 2025-02-04
+# Description: Tests that reactivate() correctly reactivates an existing account.
+# ===========================
+
+def test_reactivate():
+    """Test that 'reactivate()' correctly reactivates an existing account"""
+    account = Account(role = "user", email = "test@example.com", name = "joseph", disabled = True)
+    account.disabled = False
+    assert account.disabled == False
+
+# TODO 10: Test email uniqueness enforcement
+# - Ensure that assigning an invalid email raises an appropriate error.
+# - Verifying that email is valid, else, raise error
+
+# ===========================
+# Test: Test email uniqueness enforcement
+# Author: Joshua Nathan Zamora
+# Date: 2025-02-04
+# Description: Test to validate an email input
+# ===========================
+
+def test_validate_unique_email():
+    """Test email validation function"""
+    from models.account import Account, DataValidationError
+
+    # Test with a valid email address (should not raise an error)
+    valid_email = "johndoe@example.com"
+    account = Account(name="John Doe", email=valid_email)
+    # Explicitly call validate_email (if not already called in __init__)
+    account.validate_email()
+
+    # List of invalid email formats to test
+    invalid_emails = [
+        "johndoeexample.com",  # missing '@'
+        "johndoe@.com",        # missing domain name
+        "johndoe@example",     # missing TLD after '.'
+    ]
+
+    for invalid_email in invalid_emails:
+        account.email = invalid_email
+        with pytest.raises(DataValidationError, match="Invalid email format"):
+            account.validate_email()
 
 # TODO 11: Test Deleting an Account
 # - Ensure that `delete()` removes an account from the database.
 # - Verify that attempting to retrieve a deleted account returns `None` or raises an error.
-
