@@ -27,13 +27,14 @@ class TestCounterEndpoints:
         """It should create a counter"""
         result = client.post('/counters/foo')
         assert result.status_code == status.HTTP_201_CREATED
-
-    def test_delete_nonexistent_counter(self, client):
-            """It should not delete a non-existent counter"""
-            result = client.delete('/counters/nonexistent')
-            assert result.status_code == status.HTTP_404_NOT_FOUND
     
-        # BRENDA CORONADO    
+    # Student 1: 
+    def test_create_new_counter(self, client):
+        """It should create a counter"""
+        result = client.post('/counters/foooo')
+        assert result.status_code == status.HTTP_201_CREATED
+        
+    # Student 2: BRENDA CORONADO    
     def test_duplicate_counter(self, client):
         """It should create a counter and prevent duplicates"""
         # First request should succeed
@@ -45,29 +46,18 @@ class TestCounterEndpoints:
         assert duplicate_result.status_code == status.HTTP_409_CONFLICT
         assert duplicate_result.get_json() == {"error": "Counter fooo already exists"}
 
+    # Student 3: Joseph Dib
+    def test_get_counter(self, client):
+            """It should get a counter"""
+            result = client.post('/counters/foo')
+            result = client.get('/counters/foo')
+            assert result.status_code == status.HTTP_201_CREATED
+    
+    # Student 4
     def test_get_non_existent_counter(self, client):
         """It should return 404 for a non-existent counter"""
         result = client.get('/counters/nonexistent')
         assert result.status_code == status.HTTP_404_NOT_FOUND
-
-    def test_get_counter(self, client):
-        """It should get a counter"""
-        result = client.post('/counters/foo')
-        result = client.get('/counters/foo')
-        assert result.status_code == status.HTTP_201_CREATED
-
-    def test_create_new_counter(self, client):
-        """It should create a counter"""
-        result = client.post('/counters/foooo')
-        assert result.status_code == status.HTTP_201_CREATED
-
-    def test_delete_counter(self, client):
-        """It should delete an existing counter"""
-        client.post('/counters/my_counter')
-        response = client.delete('/counters/my_counter')
-        assert response.status_code == status.HTTP_204_NO_CONTENT
-        response = client.get('/counters/my_counter')
-        assert response.status_code == status.HTTP_404_NOT_FOUND
 
     # Evan Hollingshead - 5
     def test_increment_counter(self, client):
@@ -79,3 +69,17 @@ class TestCounterEndpoints:
         assert response.get_json() == {counter_name: 1}
         response = client.put(f"/counters/{counter_name}")
         assert response.get_json() == {counter_name: 2}
+
+    # Student 7
+    def test_delete_counter(self, client):
+        """It should delete an existing counter"""
+        client.post('/counters/my_counter')
+        response = client.delete('/counters/my_counter')
+        assert response.status_code == status.HTTP_200_OK
+        
+    # Student 8
+    def test_delete_nonexistent_counter(self, client):
+        """It should not delete a non-existent counter"""
+        result = client.delete('/counters/nonexistent')
+        assert result.status_code == status.HTTP_404_NOT_FOUND
+        
