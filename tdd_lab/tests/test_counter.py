@@ -53,7 +53,7 @@ class TestCounterEndpoints:
 
     def test_create_new_counter(self, client):
         """It should create a counter"""
-        result = client.post('/counters/fooo')
+        result = client.post('/counters/foooo')
         assert result.status_code == status.HTTP_201_CREATED
 
     def test_delete_counter(self, client):

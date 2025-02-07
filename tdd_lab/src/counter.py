@@ -26,14 +26,12 @@ def get_counter(name):
     """Get the value of a counter"""
     if not counter_exists(name):
         return jsonify({"error": f"Counter {name} not found"}), status.HTTP_404_NOT_FOUND
-    return jsonify({name: COUNTERS[name]}), status.HTTP_200_OK
-
-@app.route('/counters/<name>', methods=['GET'])
-def lget_counter(name):
-    """get a counter"""
     if counter_exists(name):
-        return jsonify({name: COUNTERS[name]}), status.HTTP_201_CREATED
-    return jsonify({"error": f"Counter {name} already exists"}), status.HTTP_409_CONFLICT
+        return jsonify({name: COUNTERS[name]}), status.HTTP_201_CREATED    
+    return jsonify({name: COUNTERS[name]}), status.HTTP_200_OK
+    
+
+
 
 @app.route('/counters/<name>', methods=['POST'])
 def create_new_counter(name):
