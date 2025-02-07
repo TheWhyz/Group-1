@@ -70,6 +70,13 @@ class TestCounterEndpoints:
         response = client.put(f"/counters/{counter_name}")
         assert response.get_json() == {counter_name: 2}
 
+    # Student 6 Rubi Escobedo
+    def test_increment_non_existent_counter(self, client):
+        """It should not increment a non-existent counter"""
+        response = client.put("/counters/does_not_exist")
+        assert response.status_code == status.HTTP_404_NOT_FOUND
+        assert response.get_json() == {"error": "Counter does_not_exist not found"}
+
     # Student 7
     def test_delete_counter(self, client):
         """It should delete an existing counter"""
