@@ -96,7 +96,7 @@ class TestCounterEndpoints:
 
     # ===========================
     # Test: Retrieve total count of all counters
-    # Author: Student 1
+    # Author: Student 1 - Evan Hollingshead
     # Modification: Add assertion to check the total value is correct.
     # ===========================
     def test_get_total_counters(self, client):
@@ -110,6 +110,8 @@ class TestCounterEndpoints:
         assert response.status_code == HTTPStatus.OK
         
         # TODO: Add an assertion to check the correct total value
+        data = response.get_json()
+        assert data['total'] == 1
 
     # ===========================
     # Test: Retrieve top N highest counters
