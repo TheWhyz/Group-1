@@ -140,7 +140,7 @@ class TestCounterEndpoints:
 
     # ===========================
     # Test: Retrieve top N lowest counters
-    # Author: Student 3
+    # Author: Student 3 - Joshua Nathan Zamora
     # Modification: Ensure lowest counter has value 0.
     # ===========================
     def test_bottom_n_counters(self, client):
