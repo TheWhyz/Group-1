@@ -158,7 +158,7 @@ class TestCounterEndpoints:
 
     # ===========================
     # Test: Set a counter to a specific value
-    # Author: Student 4
+    # Author: Student 4 - Matthew Rainwater
     # Modification: Ensure setting a counter to the same value does nothing.
     # ===========================
     def test_set_counter_to_value(self, client):
@@ -170,6 +170,9 @@ class TestCounterEndpoints:
         assert response.get_json() == {"test1": 5}
 
         # TODO: Add an assertion to check setting to the same value does not change it again
+        response_same = client.put('/counters/test1/set/5')
+        assert response_same.status_code == HTTPStatus.OK
+        assert response_same.get_json() == {"test1": 5} 
 
     # ===========================
     # Test: Prevent negative counter values
