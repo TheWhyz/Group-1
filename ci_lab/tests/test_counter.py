@@ -139,7 +139,7 @@ class TestCounterEndpoints:
         
 
     # ===========================
-    # Test: Retrieve top N lowest counters
+    # Test: Retrieve bottom N lowest counters
     # Author: Student 3 - Joshua Nathan Zamora
     # Modification: Ensure lowest counter has value 0.
     # ===========================
