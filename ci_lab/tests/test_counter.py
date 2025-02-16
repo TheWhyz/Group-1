@@ -149,12 +149,14 @@ class TestCounterEndpoints:
         client.post('/counters/a')
         client.post('/counters/b')
 
-        response = client.get('/counters/bottom/1')
+        response = client.get('/counters/bottom/2')
 
         assert response.status_code == HTTPStatus.OK
-        assert min(response.get_json().values()) == 0  
+        assert min(response.get_json().values()) == 0
 
         # TODO: Add an assertion to check that 'b' is indeed in the response
+        data = response.get_json()
+        assert 'b' in data, f"Expected counter 'b' to be in the bottom N counters, but got {data}"
 
     # ===========================
     # Test: Set a counter to a specific value
