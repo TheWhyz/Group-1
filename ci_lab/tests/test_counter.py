@@ -231,7 +231,7 @@ class TestCounterEndpoints:
 
     # ===========================
     # Test: Get total number of counters
-    # Author: Student 8
+    # Author: Maylee Del Rio
     # Modification: Add assertion to check count is an integer.
     # ===========================
     def test_get_total_number_of_counters(self, client):
@@ -246,6 +246,7 @@ class TestCounterEndpoints:
         assert isinstance(response.get_json()["count"], int)  
 
         # TODO: Add an assertion to check the exact count value
+        assert response.get_json()["count"] == 2  # make count exact value 2
 
     # ===========================
     # Test: Retrieve counters with values greater than a threshold
