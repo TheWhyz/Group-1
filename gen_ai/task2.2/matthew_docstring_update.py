@@ -18,7 +18,7 @@ def base10_to_base7(n: int) -> str:
 
     Notes:
         - This function does not handle negative numbers.
-        - The output is always a string.
+        - The output is always a string
     """
     if n == 0:
         return '0'
