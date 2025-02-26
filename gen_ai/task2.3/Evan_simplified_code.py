@@ -32,7 +32,7 @@ def main():
     pen.goto(0, -250)
     pen.down()
     
-    draw_branch(pen, BRANCH_LENGTH, ANGLE, DEPTH)
+    draw_branch(pen, BRANCH_LENGTH, ANGLE, DEPTH) # Draw the tree
     screen.mainloop()
 
 if __name__ == "__main__":
