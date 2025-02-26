@@ -8,6 +8,7 @@ and the challenges you’re facing in understanding the code.
 
 
 // The visitMethodDecl function checks method modifiers and performs type checking
+// The visitMethodDecl function checks method modifiers and performs type checking
 void visitMethodDecl(MethodDecl *md) {
     // Check if the method is public or private
     if (md->isPublic() && md->isPrivate()) {
@@ -20,19 +21,41 @@ void visitMethodDecl(MethodDecl *md) {
             // Static final methods cannot return primitive types
             reportError("Static final methods cannot return primitive types.");
         }
-       
     }
 
-   
+    // Check if the method is both abstract and final
     if (md->isAbstract() && md->isFinal()) {
         reportError("A method cannot be both abstract and final.");
     }
 
+    // Validate parameter types
+    std::unordered_set<std::string> paramNames;
     for (auto &param : md->getParameters()) {
         if (!param->getType()->isValid()) {
             reportError("Parameter type is invalid in method: " + md->getName());
         }
+        // Check for duplicate parameter names
+        if (!paramNames.insert(param->getName()).second) {
+            reportError("Duplicate parameter name in method: " + md->getName());
+        }
     }
+
+    // Check return type validity
+    if (!md->getReturnType()->isValid()) {
+        reportError("Invalid return type in method: " + md->getName());
+    }
+    
+    // Check if method overrides a superclass method
+    MethodDecl *superMethod = md->getSuperMethod();
+    if (superMethod) {
+        if (!md->matchesSignature(superMethod)) {
+            reportError("Method " + md->getName() + " does not properly override superclass method.");
+        }
+        if (superMethod->isFinal()) {
+            reportError("Cannot override a final method: " + md->getName());
+        }
+    }
+}
 
 
 /*
@@ -40,34 +63,40 @@ Implement Changes:
 Apply ChatGPT’s recommendations to simplify or optimize 
 the code, ensuring that functionality is maintained.
 */
-// Helper function for error reporting with method context
-void reportMethodError(const std::string& message, MethodDecl* md) {
-    reportError(message + " Method: " + md->getName());
-}
-
-// Simplified and refactored version of visitMethodDecl
+// The visitMethodDecl function checks method modifiers and performs type checking
 void visitMethodDecl(MethodDecl *md) {
-    // Check if the method is both public and private
     if (md->isPublic() && md->isPrivate()) {
-        reportMethodError("A method cannot be both public and private.", md);
+        reportError("A method cannot be both public and private.");
     }
 
-    // Check if the method is static and final, ensuring static final methods don't return primitive types
-    if (md->isStatic() && md->isFinal()) {
-        if (md->getReturnType()->isPrimitive()) {
-            reportMethodError("Static final methods cannot return primitive types.", md);
+    if (md->isStatic() && md->getReturnType()->isPrimitive() && md->isFinal()) {
+        reportError("Static final methods cannot return primitive types.");
+    }
+
+    if (md->isAbstract() && md->isFinal()) {
+        reportError("A method cannot be both abstract and final.");
+    }
+
+    std::unordered_set<std::string> paramNames;
+    for (auto &param : md->getParameters()) {
+        if (!param->getType()->isValid()) {
+            reportError("Invalid parameter type in method: " + md->getName());
+        }
+        if (!paramNames.insert(param->getName()).second) {
+            reportError("Duplicate parameter name in method: " + md->getName());
         }
     }
 
-    // Check if the method is both abstract and final
-    if (md->isAbstract() && md->isFinal()) {
-        reportMethodError("A method cannot be both abstract and final.", md);
+    if (!md->getReturnType()->isValid()) {
+        reportError("Invalid return type in method: " + md->getName());
     }
-
-    // Validate parameter types
-    for (auto &param : md->getParameters()) {
-        if (!param->getType()->isValid()) {
-            reportMethodError("Parameter type is invalid.", md);
+    
+    if (MethodDecl *superMethod = md->getSuperMethod()) {
+        if (!md->matchesSignature(superMethod)) {
+            reportError("Method " + md->getName() + " does not properly override superclass method.");
+        }
+        if (superMethod->isFinal()) {
+            reportError("Cannot override a final method: " + md->getName());
         }
     }
 }
