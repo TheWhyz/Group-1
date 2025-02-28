@@ -1,3 +1,4 @@
+// Old refactored code
 void crateCalculations()
 {
     string line;
@@ -353,3 +354,81 @@ void crateCalculations()
         fout << "Total cost" << setprecision(2) << setw(41) << setfill('.') << "$" << totalCost << endl;
 
     }
+}
+
+
+// New refactored code
+void printTableHeader(int crateOrder) {
+    fout << endl << setw(110) << setfill('-') << '-' << endl;
+    fout << "\nCrate Order " << crateOrder << endl;
+    fout << "+--------+----------+---------+---------+-------------+---------------+-----------+" << endl;
+    fout << "| TYPE   | LENGTH   | WIDTH   | HEIGHT  | VOLUME      | SURFACE AREA  | DIAGONAL  |" << endl;
+    fout << "+--------+----------+---------+---------+-------------+---------------+-----------+" << endl;
+}
+
+double readAndValidateDimension(const string& type, double minSize, double maxSize) {
+    double value;
+    fin >> value;
+    if (fin.fail() || value < minSize || value > maxSize) {
+        fout << "| " << setw(6) << type << " | " << setw(8) << "Error" << " |" << endl;
+        fin.clear();
+        fin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return -1; 
+    }
+    return value;
+}
+
+void processCrate() {
+    static int crateOrder = 1;
+    printTableHeader(crateOrder++);
+
+    double lengthCrate = readAndValidateDimension("Crate", CRATE_SIZE_MINIMUM, CRATE_SIZE_MAXIMUM);
+    if (lengthCrate == -1) return;
+    double widthCrate = readAndValidateDimension("Crate", CRATE_SIZE_MINIMUM, CRATE_SIZE_MAXIMUM);
+    if (widthCrate == -1) return;
+    double heightCrate = readAndValidateDimension("Crate", CRATE_SIZE_MINIMUM, CRATE_SIZE_MAXIMUM);
+    if (heightCrate == -1) return;
+
+    double volumeCrate = lengthCrate * widthCrate * heightCrate;
+    double surfaceAreaCrate = 2 * (lengthCrate * widthCrate + heightCrate * widthCrate + heightCrate * lengthCrate);
+    double diagonalCrate = sqrt(pow(lengthCrate, 2) + pow(widthCrate, 2) + pow(heightCrate, 2));
+
+    fout << "| Crate  | " << setw(8) << lengthCrate << " | " << setw(7) << widthCrate << " | " << setw(7) << heightCrate 
+         << " | " << setw(11) << volumeCrate << " | " << setw(13) << surfaceAreaCrate 
+         << " | " << setw(9) << diagonalCrate << " |" << endl;
+    fout << "+--------+----------+---------+---------+-------------+---------------+-----------+" << endl;
+
+    double lengthSpace = readAndValidateDimension("Space", STORAGE_ROOM_SIZE_MINIMUM, STORAGE_ROOM_SIZE_MAXIMUM);
+    if (lengthSpace == -1) return;
+    double widthSpace = readAndValidateDimension("Space", STORAGE_ROOM_SIZE_MINIMUM, STORAGE_ROOM_SIZE_MAXIMUM);
+    if (widthSpace == -1) return;
+    double heightSpace = readAndValidateDimension("Space", STORAGE_ROOM_SIZE_MINIMUM, STORAGE_ROOM_SIZE_MAXIMUM);
+    if (heightSpace == -1) return;
+
+    double volumeSpace = lengthSpace * widthSpace * heightSpace;
+    double totalCrates = floor(lengthSpace / lengthCrate) * floor(widthSpace / widthCrate) * floor(heightSpace / heightCrate);
+    fout << totalCrates << " crates can fit in the storage space." << endl;
+
+    double crateFee = (volumeCrate <= 40.0) ? totalCrates * CRATE_FEE_SMALL :
+                      (volumeCrate <= 80.0) ? totalCrates * CRATE_FEE_MEDIUM :
+                                              totalCrates * CRATE_FEE_LARGE;
+
+    fout << "Crate volume " << volumeCrate << " cost $" << crateFee / totalCrates << endl;
+    fout << "Total crate shipping cost: $" << crateFee << endl;
+
+    double storageFeePerCubicFoot = (volumeSpace < 250000.0) ? STORAGE_ROOM_FEE_SMALL :
+                                    (volumeSpace <= 500000.0) ? STORAGE_ROOM_FEE_MEDIUM :
+                                    (volumeSpace <= 750000.0) ? STORAGE_ROOM_FEE_LARGE :
+                                                                STORAGE_ROOM_FEE_EXTRA_LARGE;
+    double storageFee = volumeSpace * storageFeePerCubicFoot;
+    fout << "Storage room cost: $" << storageFee << endl;
+    fout << "Total cost: $" << crateFee + storageFee << endl;
+}
+
+void crateCalculations() {
+    string line;
+    getline(fin, line);
+    while (!fin.eof()) {
+        processCrate();
+    }
+}
